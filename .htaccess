@@ -1,10 +1,10 @@
-RewriteEngine on
-
-# Redirect to index.php for all requests except /assets/*
-RewriteCond %{REQUEST_URI} !^/Chat/assets/
-RewriteRule ^ index.php [L]
-
-# Allow direct access to assets folder
-<IfModule mod_rewrite.c>
-    RewriteRule ^Chat/assets/ - [L]
-</IfModule>
+#RewriteEngine on
+#
+## Redirect to index.php for all requests except /assets/*
+#RewriteCond %{REQUEST_URI} !^/Mnaouer_fatimaezzahra_chat/assets/
+#RewriteRule ^ index.php [L]
+#
+## Allow direct access to assets folder
+#<IfModule mod_rewrite.c>
+#    RewriteRule ^Mnaouer_fatimaezzahra_chat/assets/ - [L]
+#</IfModule>
