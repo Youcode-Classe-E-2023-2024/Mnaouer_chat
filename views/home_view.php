@@ -6,10 +6,9 @@
             <div class="card-body">
                 <h5 class="card-title"><?= $room['rooms_name']?></h5>
                 <p class="card-text"><?= $room['rooms_desc']?></p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <a href="index.php?page=room" class="btn btn-primary">Go somewhere</a>
             </div>
         </div>
     </div>
     <?php endforeach; ?>
 </div>
-
