@@ -7,17 +7,20 @@ class User
     public $username;
     private $password;
 
-    public function __construct($id)
+    public function __construct($id = null)
     {
-        global $db;
+        if ($id) {
+            global $db;
 
-        $result = $db->query("SELECT * FROM users WHERE users_id = '$id'");
-        $user = $result->fetch_assoc();
+            $result = $db->query("SELECT * FROM users WHERE users_id = '$id'");
+            $user = $result->fetch_assoc();
 
-        $this->id = $user['users_id'];
-        $this->email = $user['users_email'];
-        $this->username = $user['users_username'];
-        $this->password = $user['users_password'];
+            $this->id = $user['users_id'];
+            $this->email = $user['users_email'];
+            $this->username = $user['users_username'];
+            $this->password = $user['users_password'];
+        }
+
     }
 
     static function getAll()
@@ -34,16 +37,18 @@ class User
         return $db->query("UPDATE users SET users_email = '$this->email', users_username = '$this->username' WHERE users_id = '$this->id'");
     }
 
-    public function setPassword($pwd)
+    function setPassword($pwd)
     {
         $this->password = password_hash($pwd, PASSWORD_DEFAULT);
     }
 
-    function register($username, $email, $pwd)
+    function register()
     {
         global $db;
 
-        return $db->query("INSERT INTO users (users_username, users_email, users_password) VALUES ('$username', '$email', '$pwd');");
+        $db->query("INSERT INTO users (users_username, users_email, users_password) VALUES ('$this->username', '$this->email', '$this->password');");
+
+        return $db->insert_id;
     }
 
     function login($email, $password)
