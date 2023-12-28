@@ -11,4 +11,4 @@
 //$users = User::getAll();
 //dd($users);
 
-$rooms = Room::listAll();
+$rooms = Room::getAll();

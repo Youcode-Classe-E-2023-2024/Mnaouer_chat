@@ -2,12 +2,24 @@
 
 class Room
 {
-    function __construct()
-    {
+    public $id;
+    public $name;
+    public $desc;
+    public $timestamp;
 
+    function __construct($id)
+    {
+        global $db;
+
+        $room = $db->query("SELECT * FROM rooms WHERE rooms_id = '$id'");
+
+        $this->id = $room['rooms_id'];
+        $this->name = $room['rooms_name'];
+        $this->desc = $room['rooms_name'];
+        $this->timestamp = $room['rooms_name'];
     }
 
-    static function listAll()
+    static function getAll()
     {
         global $db;
 
@@ -15,14 +27,14 @@ class Room
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    function selectMessagesById($id)
+    function getMessages()
     {
         global $db;
-        $result = $db->query("SELECT * FROM messages WHERE messages_room = '$id';");
+        $result = $db->query("SELECT * FROM messages WHERE messages_room = '$this->id';");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    function selectUsersById($id)
+    function getMembers()
     {
         global $db;
         $result = $db->query("
@@ -35,48 +47,14 @@ class Room
         return $result->fetch_all(1);
     }
 
-    function selectById($id)
+    static function create($rooms_name, $rooms_desc)
     {
         global $db;
-        $result = $db->query("SELECT tickets_id, tickets_title, tickets_desc FROM tickets WHERE tickets_id='$id'");
-        return $result->fetch_assoc();
+        return $db->query("INSERT INTO rooms (rooms_name, rooms_desc) VALUES ('$rooms_name', '$rooms_desc');");
     }
 
-    function create($tickets_title, $tickets_desc, $tickets_status, $tickets_priority, $tags, $users)
+    function ban()
     {
-        global $db;
-        $user_id = $_SESSION['user_id'];
-        $result = $db->query("INSERT INTO tickets (tickets_title, tickets_desc, tickets_status, tickets_priority, tickets_created_by) VALUES ('$tickets_title', '$tickets_desc', '$tickets_status', '$tickets_priority', '$user_id');");
 
-        $id = $db->insert_id;
-
-        if ($result) {
-            if (isset($tags) && !empty($tags)) {
-                foreach ($tags as $tag_id) {
-                    $db->query("INSERT INTO tickets_tags (tickets_tags_id, tags_tickets_id) VALUES ('$id', '$tag_id');");
-                }
-            }
-
-            if (isset($users) && !empty($users)) {
-                foreach ($users as $user_id) {
-                    $db->query("INSERT INTO tickets_users (tickets_users_id, users_tickets_id) VALUES ('$id', '$user_id');");
-                }
-            }
-
-            return true;
-        }
-        return false;
     }
-
-    function assign()
-    {
-        echo 'assign';
-    }
-
-    public function comment($user_id, $ticket_id, $text)
-    {
-        global $db;
-        return $db->query("INSERT INTO comment (text, creatorId, ticketId) VALUES ('$text','$user_id', '$ticket_id');");
-    }
-
 }
