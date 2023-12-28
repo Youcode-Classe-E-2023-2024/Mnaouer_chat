@@ -51,18 +51,32 @@ class User
         return $db->insert_id;
     }
 
-    function login($email, $password)
+//    static function login($email, $password)
+//    {
+//        global $db;
+//
+//        $result = $db->query("SELECT * FROM users WHERE users_email ='$email';");
+//
+//        $user = $result->fetch_assoc();
+//
+//        $is_pwd_correct = password_verify($password, $user['users_password']);
+//    }
+
+    static function login($email, $password)
     {
         global $db;
 
-        //les points sont la liason entre string email et adresse email et password et pwd
-        $result = $db->query('SELECT * FROM users WHERE users_email ="' . $email . '"  and users_password = "' . $password . '";');
+        $result = $db->query("SELECT * FROM users WHERE users_email ='$email';");
 
-        return $result->fetch_assoc();
+        $user = $result->fetch_assoc();
+
+        if ($user && password_verify($password, $user['users_password'])) {
+            // Return user details if login is successful
+            return $user;
+        }
+
+        // Return null or false if login fails
+        return null;
     }
 
-    function logout()
-    {
-        session_destroy();
-    }
 }
