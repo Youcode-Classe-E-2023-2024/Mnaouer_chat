@@ -7,16 +7,18 @@ class Room
     public $desc;
     public $timestamp;
 
-    function __construct($id)
+    function __construct($id = null)
     {
-        global $db;
+        if ($id) {
+            global $db;
 
-        $room = $db->query("SELECT * FROM rooms WHERE rooms_id = '$id'");
+            $room = $db->query("SELECT * FROM rooms WHERE rooms_id = '$id'");
 
-        $this->id = $room['rooms_id'];
-        $this->name = $room['rooms_name'];
-        $this->desc = $room['rooms_name'];
-        $this->timestamp = $room['rooms_name'];
+            $this->id = $room['rooms_id'];
+            $this->name = $room['rooms_name'];
+            $this->desc = $room['rooms_name'];
+            $this->timestamp = $room['rooms_name'];
+        }
     }
 
     static function getAll()
@@ -39,18 +41,36 @@ class Room
         global $db;
         $result = $db->query("
         SELECT users_username
-        FROM tickets
-                 JOIN tickets_users ON tickets.tickets_id = tickets_users.tickets_users_id
-                 JOIN users ON tickets_users.users_tickets_id = users.users_id
-        WHERE tickets.tickets_id = '$id';
+        FROM rooms
+                 JOIN users_rooms on rooms_id = rooms_users_id
+                 JOIN users on users_rooms_id = users_id
+        WHERE rooms_id = '$this->id';
         ");
         return $result->fetch_all(1);
     }
 
-    static function create($rooms_name, $rooms_desc)
+    function inviteMembers()
+    {
+
+    }
+
+    function create($users, $owner_id)
     {
         global $db;
-        return $db->query("INSERT INTO rooms (rooms_name, rooms_desc) VALUES ('$rooms_name', '$rooms_desc');");
+        $result_room = $db->query("INSERT INTO rooms (rooms_name, rooms_desc) VALUES ('$this->name', '$this->desc');");
+        $id = $db->insert_id;
+        $result_owner = $db->query("INSERT INTO users_rooms (rooms_users_id, users_rooms_id, users_rooms_is_owner) VALUES ('$id', '$owner_id', true);");
+
+        if ($result_room && $result_owner) {
+            if (isset($users) && !empty($users)) {
+                foreach ($users as $user_id) {
+                    $db->query("INSERT INTO users_rooms (rooms_users_id, users_rooms_id, users_rooms_is_invited) VALUES ('$id', '$user_id', true);");
+                }
+            }
+
+            return true;
+        }
+        return false;
     }
 
     function ban()

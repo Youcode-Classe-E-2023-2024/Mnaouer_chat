@@ -23,10 +23,10 @@ class User
 
     }
 
-    static function getAll()
+    static function getAll($sign_in_user)
     {
         global $db;
-        $result = $db->query("SELECT * FROM user");
+        $result = $db->query("SELECT * FROM users WHERE users_id != '$sign_in_user'");
         if ($result)
             return $result->fetch_all(MYSQLI_ASSOC);
     }
