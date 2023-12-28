@@ -1,24 +1,50 @@
 <?php
-if (isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['password']) && !empty($_POST['password']))
-{
+//if (isset($_POST['login']))
+//{
+//    if (isset($user_login)) {
+//        $_SESSION['user_id'] = $user_login['users_id'];
+//        header("Location: index.php?page=home");
+//    } else {
+//        header("Location: index.php?page=login");
+//    }
+//}
+//
+//if (isset($_POST['logout'])) {
+//    session_destroy();
+//}
+//session_start();
 
-    // Instantier la classe utilisateur
-    include_once '_classes/User.php';
-    $user = new User();
+if (isset($_POST['login'])) {
+    $user_login = User::login($_POST['email'], $_POST['password']);
 
-    $result = $user->login($_POST['email'], $_POST['password']);
-
-    if (isset($result)) {
-        $_SESSION['user_id'] = $result['users_id'];
+    if ($user_login) {
+        $_SESSION['user_id'] = $user_login['users_id'];
         header("Location: index.php?page=home");
+        exit();
     } else {
         header("Location: index.php?page=login");
+        exit();
     }
 }
 
 if (isset($_POST['logout'])) {
-    include_once '_classes/User.php';
-    $user = new User();
-
-    $user->logout();
+    session_destroy();
+    header("Location: index.php?page=login");
+    exit();
 }
+
+
+
+//if (isset($_POST['login']))
+//{
+//    if (isset($user_login)) {
+//        $_SESSION['user_id'] = $user_login['users_id'];
+//        header("Location: index.php?page=home");
+//    } else {
+//        header("Location: index.php?page=login");
+//    }
+//}
+//
+//if (isset($_POST['logout'])) {
+//    session_destroy();
+//}
